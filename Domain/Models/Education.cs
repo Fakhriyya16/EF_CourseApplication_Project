@@ -12,5 +12,6 @@ namespace Domain.Models
         public string Name { get; set; }
         public string Color { get; set; }
         public DateTime CreatedDate { get; set; }
+        public ICollection<Group> Groups { get; set; }
     }
 }

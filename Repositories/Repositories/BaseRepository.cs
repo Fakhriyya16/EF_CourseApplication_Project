@@ -5,6 +5,7 @@ using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,10 +13,10 @@ namespace Repositories.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        private readonly AppDbContext<T> _appDbContext;
+        private readonly AppDbContext _appDbContext;
         public BaseRepository()
         {
-            _appDbContext = new AppDbContext<T>();
+            _appDbContext = new AppDbContext();
         }
         public async Task CreateAsync(T entity)
         {
@@ -29,26 +30,38 @@ namespace Repositories.Repositories
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<List<T>> GetAll()
+        public async Task<List<T>> GetAllAsync()
         {
            return await _appDbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<List<T>> GetAllByExpression(Func<T, bool> predicate)
+        public async Task<List<T>> GetAllByExpressionAsync(Func<T, bool> predicate)
         {
             var datas = await _appDbContext.Set<T>().ToListAsync();
             var result = datas.Where(predicate).ToList();
             return result;
         }
 
-        public async Task<T> GetByExpression(Func<T, bool> predicate)
+        public async Task<List<T>> GetAllWithRelationsAsync(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _appDbContext.Set<T>();
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> GetByExpressionAsync(Func<T, bool> predicate)
         {
             var datas = await _appDbContext.Set<T>().ToListAsync();
             var result = datas.FirstOrDefault(predicate);
             return result;
         }
 
-        public async Task<List<T>> Search(Func<T, bool> predicate)
+        public async Task<List<T>> SearchAsync(Func<T, bool> predicate)
         {
             var datas = await _appDbContext.Set<T>().ToListAsync();
             var result = datas.Where(predicate).ToList();
