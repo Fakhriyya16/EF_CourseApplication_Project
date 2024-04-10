@@ -107,7 +107,7 @@ namespace EF_CourseApplication_Project.Controllers
                 goto OrderNumber;
             }
             
-            var educationsSorted = await _educationService.SortWithCreatedDate(orderNumStr);
+            var educationsSorted = await _educationService.SortWithCreatedDate(orderNum);
             foreach (var education in educationsSorted)
             {
                 ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color,education.CreatedDate));
@@ -135,19 +135,18 @@ namespace EF_CourseApplication_Project.Controllers
             }
             else
             {
-                educationNewName = educationFound.Name;
+                educationFound.Name = educationNewName;
             }
 
             ConsoleColor.Cyan.ConsoleMessage("Update color: ");
             string educationNewColor = Console.ReadLine();
-            if (educationNewColor is null) educationNewColor = educationFound.Color;
             if (string.IsNullOrWhiteSpace(educationNewColor))
             {
                 educationNewColor = _educationService.UpdateAsync(educationId).Result.Color;
             }
             else
             {
-                educationNewColor = educationFound.Color;
+                educationFound.Color = educationNewColor;
             }
             ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }

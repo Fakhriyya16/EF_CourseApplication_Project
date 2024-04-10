@@ -5,6 +5,7 @@ using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,9 +19,9 @@ namespace Repositories.Repositories
         {
             _appDbContext = new AppDbContext();
         }
-        public async Task LoginAsync(User user)
+        public async Task<List<User>> LoginAsync()
         {
-            await _appDbContext.Users.ToListAsync();
+            return await _appDbContext.Users.ToListAsync();
         }
 
         public async Task RegisterAsync(User user)

@@ -12,7 +12,7 @@ namespace Service.Services.Interfaces
     {
         public Task<List<Group>> GetAllAsync();
         public Task<Group> GetByIdAsync(int? id);
-        public Task DeleteAsync(Group group);
+        public Task DeleteAsync(int? id);
         public Task<Group> UpdateAsync(int? id);
         public Task<List<Group>> SearchAsync(string searchName);
         public Task<List<Group>> FilterByEducationNameAsync(string groupName);

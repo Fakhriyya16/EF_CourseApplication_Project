@@ -17,9 +17,20 @@ namespace Service.Services
         {
             _repository = new UserRepository();
         }
-        public async Task LoginAsync(User user)
+        public async Task<bool> LoginAsync(string usernameOrEmail,string password)
         {
-            await _repository.LoginAsync(user);
+            var users = await _repository.LoginAsync();
+            foreach (var user in users)
+            {
+                if(user.Email == usernameOrEmail || user.UserName == usernameOrEmail)
+                {
+                    if (user.Password == password)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public async Task RegisterAsync(User user)

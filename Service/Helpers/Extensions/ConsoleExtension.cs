@@ -8,10 +8,10 @@ namespace Service.Helpers.Extensions
 {
     public static class ConsoleExtension
     {
-        public static void ConsoleMessage(this ConsoleColor color, string msj)
+        public async static Task ConsoleMessage(this ConsoleColor color, string msj)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(msj);
+            await Console.Out.WriteLineAsync(msj);
             Console.ResetColor();
         }
     }

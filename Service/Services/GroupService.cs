@@ -23,9 +23,10 @@ namespace Service.Services
             await _repository.CreateAsync(group);
         }
 
-        public async Task DeleteAsync(Group group)
+        public async Task DeleteAsync(int? id)
         {
-            await _repository.DeleteAsync(group);
+            var foundGroup = await _repository.GetByExpressionAsync(m => m.Id == id);
+            await _repository.DeleteAsync(foundGroup);
         }
 
         public async Task<List<Group>> FilterByEducationNameAsync(string groupName)
@@ -58,11 +59,11 @@ namespace Service.Services
             var groups = await _repository.GetAllAsync();
             if (orderType == (int)OrderTypes.Ascending)
             {
-                return groups.OrderBy(m => m.CreatedDate).ToList();
+                return groups.OrderBy(m => m.Capacity).ToList();
             }
             else if (orderType == (int)OrderTypes.Descending)
             {
-                return groups.OrderByDescending(m => m.CreatedDate).ToList();
+                return groups.OrderByDescending(m => m.Capacity).ToList();
             }
             return groups;
         }
