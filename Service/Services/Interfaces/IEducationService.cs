@@ -12,10 +12,10 @@ namespace Service.Services.Interfaces
         public Task CreateAsync(Education education);
         public Task<List<Education>> GetAllAsync();
         public Task<Education> GetByIdAsync(int? id);
-        public Task DeleteAsync(Education education);
-        public Task UpdateAsync(Education education);
+        public Task DeleteAsync(int? id);
+        public Task<Education> UpdateAsync(int? id);
         public Task<List<Education>> SearchAsync(string searchText);
         public Task<List<Education>> GetAllWithGroupsAsync();
-        public Task<List<Education>> SortWithCreatedDate();
+        public Task<List<Education>> SortWithCreatedDate(int orderType);
     }
 }

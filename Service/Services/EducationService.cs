@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
+using Service.Helpers.Enums;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,10 @@ namespace Service.Services
             await _repository.CreateAsync(education);
         }
 
-        public async Task DeleteAsync(Education education)
+        public async Task DeleteAsync(int? id)
         {
-            await _repository.DeleteAsync(education);
+            var foundEducation = await _repository.GetByExpressionAsync(m=>m.Id == id);
+            await _repository.DeleteAsync(foundEducation);
         }
 
         public async Task<List<Education>> GetAllAsync()
@@ -47,14 +49,24 @@ namespace Service.Services
             return await _repository.SearchAsync(m => m.Name == searchText);
         }
 
-        public async Task<List<Education>> SortWithCreatedDate()
+        public async Task<List<Education>> SortWithCreatedDate(int orderType)
         {
-            return await _repository.GetAllAsync();
+            var educations = await _repository.GetAllAsync();
+            if(orderType == (int)OrderTypes.Ascending)
+            {
+                return educations.OrderBy(m=>m.CreatedDate).ToList();
+            }
+            else if(orderType == (int)OrderTypes.Descending)
+            {
+                return educations.OrderByDescending(m => m.CreatedDate).ToList();
+            }
+            return educations;
         }
 
-        public Task UpdateAsync(Education education)
+        public async Task<Education> UpdateAsync(int? id)
         {
-            throw new NotImplementedException();
+            Education education = await _repository.UpdateAsync(id, await _repository.GetByExpressionAsync(m => m.Id == id));
+            return education;
         }
     }
 }

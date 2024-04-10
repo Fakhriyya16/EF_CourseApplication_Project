@@ -9,8 +9,8 @@ namespace Repositories.Repositories.Interfaces
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        public Task Register(User user);
-        public Task Login(User user);
+        public Task RegisterAsync(User user);
+        public Task LoginAsync(User user);
 
     }
 }

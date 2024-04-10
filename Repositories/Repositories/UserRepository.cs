@@ -18,12 +18,12 @@ namespace Repositories.Repositories
         {
             _appDbContext = new AppDbContext();
         }
-        public async Task Login(User user)
+        public async Task LoginAsync(User user)
         {
             await _appDbContext.Users.ToListAsync();
         }
 
-        public async Task Register(User user)
+        public async Task RegisterAsync(User user)
         {
             await _appDbContext.Users.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
