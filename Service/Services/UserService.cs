@@ -1,6 +1,8 @@
 ﻿using Domain.Models;
 using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
+using Service.Helpers.Constants;
+using Service.Helpers.Exceptions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,23 +21,40 @@ namespace Service.Services
         }
         public async Task<bool> LoginAsync(string usernameOrEmail,string password)
         {
-            var users = await _repository.LoginAsync();
-            foreach (var user in users)
+            try
             {
-                if(user.Email == usernameOrEmail || user.UserName == usernameOrEmail)
+                var users = await _repository.LoginAsync();
+                if (users.Count == 0) return false;
+                foreach (var user in users)
                 {
-                    if (user.Password == password)
+                    if (user.Email == usernameOrEmail || user.UserName == usernameOrEmail)
                     {
-                        return true;
+                        if (user.Password == password)
+                        {
+                            return true;
+                        }
                     }
                 }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                return false;
+            }
         }
 
         public async Task RegisterAsync(User user)
         {
-            await _repository.RegisterAsync(user);
+            try
+            {
+                await _repository.RegisterAsync(user);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
+
         }
     }
 }

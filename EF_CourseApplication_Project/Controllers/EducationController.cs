@@ -1,15 +1,10 @@
 ﻿using Domain.Models;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Service.Helpers.Constants;
-using Service.Helpers.Enums;
+using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Service.Services;
 using Service.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EF_CourseApplication_Project.Controllers
 {
@@ -20,100 +15,153 @@ namespace EF_CourseApplication_Project.Controllers
         {
             _educationService = new EducationService();
         }
-        public async void CreateAsync()
+        public async Task CreateAsync()
         {
             ConsoleColor.Cyan.ConsoleMessage("Create name: ");
             string educationName = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(educationName))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+            }
 
             ConsoleColor.Cyan.ConsoleMessage("Add color: ");
             string educationColor = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(educationColor))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+            }
 
             Education newEducation = new Education { Name = educationName, Color = educationColor };
             await _educationService.CreateAsync(newEducation);
 
-            ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
+            await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }
 
-        public async void DeleteAsync()
+        public async Task DeleteAsync()
         {
         EducationId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education course,you want to delete:");
             string educationIdStr = Console.ReadLine();
             int educationId;
-            
+
             bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
             if (!isCorrectFormat)
             {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongIdFormat);
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                 goto EducationId;
             }
 
             await _educationService.DeleteAsync(educationId);
-            ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
+            await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }
-        public async void GetAllAsync()
+        public async Task GetAllAsync()
         {
-            var educations = await _educationService.GetAllAsync();
-            foreach(var education in educations)
+            try
             {
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay,education.Id,education.Name,education.Color, education.CreatedDate));
+                var educations = await _educationService.GetAllAsync();
+                if (educations.Count == 0) throw new NotFoundException("Data was not found");
+                foreach (var education in educations)
+                {
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
             }
         }
-        //--------------work on DTOs
-        public async void GetAllWithGroups()
-        {
-            var educations = await _educationService.GetAllWithGroupsAsync();
-            foreach(var education in educations)
-            {
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color,education.CreatedDate));
-            }
-        }
-        //---------------
-        public async void GetByIdAsync()
-        {
-        EducationId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education course:");
-            string educationIdStr = Console.ReadLine();
-            int educationId;
 
-            bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
-            if (!isCorrectFormat)
-            {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongIdFormat);
-                goto EducationId;
-            }
-            Education education = await _educationService.GetByIdAsync(educationId);
-            ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color,education.CreatedDate));
-        }
-        public async void SearchAsync()
+        public async Task GetAllWithGroups()
         {
-            ConsoleColor.Cyan.ConsoleMessage("Add search text:");
-            string searchText = Console.ReadLine();
-
-            var educationsFound = await _educationService.SearchAsync(searchText);
-            foreach (var education in educationsFound)
+            var result = await _educationService.GetAllWithGroupsAsync();
+            foreach (var item in result)
             {
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color,education.CreatedDate));
+                string resultStr = item.Education + "-" + "Groups:" + string.Join(", ", item.Groups);
+                ConsoleColor.Yellow.ConsoleMessage(resultStr);
             }
         }
-        public async void SortWithCreatedDate()
+
+        public async Task GetByIdAsync()
         {
-        OrderNumber: ConsoleColor.Cyan.ConsoleMessage("Choose the sorting format:\nType 1 for ascending order\nType 2 for descending order");
-            string orderNumStr = Console.ReadLine();
-            int orderNum;
+            try
+            {
+            EducationId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education:");
+                string educationIdStr = Console.ReadLine();
+                int educationId;
 
-            bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
-            if (!isCorrectFormat)
-            {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongIdFormat);
-                goto OrderNumber;
+                bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
+                if (!isCorrectFormat)
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto EducationId;
+                }
+                Education education = await _educationService.GetByIdAsync(educationId);
+                if (education is null) throw new NotFoundException("Data was not found");
+                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
             }
-            
-            var educationsSorted = await _educationService.SortWithCreatedDate(orderNum);
-            foreach (var education in educationsSorted)
+            catch (Exception ex)
             {
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color,education.CreatedDate));
+                await Console.Out.WriteLineAsync(ex.Message);
             }
         }
-        public async void UpdateAsync()
+        public async Task SearchAsync()
+        {
+            try
+            {
+            Search: ConsoleColor.Cyan.ConsoleMessage("Add search text:");
+                string searchText = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(searchText))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Search;
+                }
+
+                var educationsFound = await _educationService.SearchAsync(searchText);
+                if (educationsFound.Count == 0) throw new NotFoundException("Data was not found");
+                foreach (var education in educationsFound)
+                {
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDTO,education.Name,education.Color));
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
+        }
+        public async Task SortWithCreatedDate()
+        {
+            try
+            {
+            OrderNumber: ConsoleColor.Cyan.ConsoleMessage("Choose the sorting format:\nType 1 for ascending order\nType 2 for descending order");
+                string orderNumStr = Console.ReadLine();
+                int orderNum;
+
+                bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
+                if (isCorrectFormat)
+                {
+                    if (orderNum != 1 || orderNum != 2)
+                    {
+                        ConsoleColor.Red.ConsoleMessage("Please choose again");
+                        goto OrderNumber;
+                    }
+                }
+                else
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto OrderNumber;
+                }
+
+                var educationsSorted = await _educationService.SortWithCreatedDate(orderNum);
+                foreach (var education in educationsSorted)
+                {
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
+        }
+        public async Task UpdateAsync()
         {
         EducationId: ConsoleColor.Cyan.ConsoleMessage("Enter id of the education course, you want to update:");
             string educationIdStr = Console.ReadLine();
@@ -122,33 +170,42 @@ namespace EF_CourseApplication_Project.Controllers
             bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
             if (!isCorrectFormat)
             {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongIdFormat);
+                await ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                 goto EducationId;
             }
-            Education educationFound = await _educationService.GetByIdAsync(educationId);
+            try
+            {
+                Education educationFound = await _educationService.GetByIdAsync(educationId);
 
-            ConsoleColor.Cyan.ConsoleMessage("Update name:");
-            string educationNewName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(educationNewName))
-            {
-                educationNewName = _educationService.UpdateAsync(educationId).Result.Name;
-            }
-            else
-            {
-                educationFound.Name = educationNewName;
-            }
+                ConsoleColor.Cyan.ConsoleMessage("Update name:");
+                string educationNewName = Console.ReadLine();
+                
+                if (string.IsNullOrWhiteSpace(educationNewName))
+                {
+                    educationFound.Name = _educationService.UpdateAsync(educationId).Result.Name;
+                }
+                else
+                {
+                    educationFound.Name = educationNewName;
+                }
+                
+                ConsoleColor.Cyan.ConsoleMessage("Update color: ");
+                string educationNewColor = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(educationNewColor))
+                {
+                    educationFound.Color = _educationService.UpdateAsync(educationId).Result.Color;
+                }
+                else
+                {
+                    educationFound.Color = educationNewColor;
+                }
 
-            ConsoleColor.Cyan.ConsoleMessage("Update color: ");
-            string educationNewColor = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(educationNewColor))
-            {
-                educationNewColor = _educationService.UpdateAsync(educationId).Result.Color;
+                ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
             }
-            else
+            catch (Exception ex)
             {
-                educationFound.Color = educationNewColor;
+                await Console.Out.WriteLineAsync(ex.Message);
             }
-            ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Service.Helpers.Constants;
+using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Service.Services;
 using Service.Services.Interfaces;
@@ -18,31 +19,68 @@ namespace EF_CourseApplication_Project.Controllers
         {
             _userService = new UserService();
         }
-        public async void Register()
+        public async Task Register()
         {
-            ConsoleColor.Cyan.ConsoleMessage("Add your full name:");
-            string fullName = Console.ReadLine();
+            try
+            {
+            Name: ConsoleColor.Cyan.ConsoleMessage("Add your full name:");
+                string fullName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(fullName))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Name;
+                }
 
-            ConsoleColor.Cyan.ConsoleMessage("Create username:");
-            string username = Console.ReadLine();
+            UserName: ConsoleColor.Cyan.ConsoleMessage("Create username:");
+                string username = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto UserName;
+                }
 
-            ConsoleColor.Cyan.ConsoleMessage("Create email:");
-            string email = Console.ReadLine();
+            Email: ConsoleColor.Cyan.ConsoleMessage("Create email:");
+                string email = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Email;
+                }
 
-            ConsoleColor.Cyan.ConsoleMessage("Create password:");
-            string password = Console.ReadLine();
+            Password: ConsoleColor.Cyan.ConsoleMessage("Create password:");
+                string password = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Password;
+                }
 
-            User user = new User { FullName = fullName, UserName = username, Email = email, Password = password };
-            await _userService.RegisterAsync(user);
-            await ConsoleColor.Green.ConsoleMessage(ResponseMessages.RegisterSuccess);
+                User user = new User { FullName = fullName, UserName = username, Email = email, Password = password };
+                await _userService.RegisterAsync(user);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.RegisterSuccess);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
         }
-        public async void Login()
+        public async Task Login()
         {
-            ConsoleColor.Cyan.ConsoleMessage("Enter your email or username:");
+        Email: ConsoleColor.Cyan.ConsoleMessage("Enter your email or username:");
             string usernameOrEmail = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(usernameOrEmail))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto Email;
+            }
 
-            ConsoleColor.Cyan.ConsoleMessage("Enter your password:");
+        Password: ConsoleColor.Cyan.ConsoleMessage("Enter your password:");
             string password = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto Password;
+            }
 
             var result = await _userService.LoginAsync(usernameOrEmail, password);
             if (result)
@@ -51,7 +89,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             else
             {
-                await ConsoleColor.Red.ConsoleMessage("Login Failed");
+                throw new LoginFailedException("Login Failed");
             }
         }
     }

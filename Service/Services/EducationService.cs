@@ -1,7 +1,10 @@
 ﻿using Domain.Models;
 using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
+using Service.DTOs;
+using Service.Helpers.Constants;
 using Service.Helpers.Enums;
+using Service.Helpers.Exceptions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,38 +23,73 @@ namespace Service.Services
         }
         public async Task CreateAsync(Education education)
         {
-            await _repository.CreateAsync(education);
+            try
+            {
+                await _repository.CreateAsync(education);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
         }
 
         public async Task DeleteAsync(int? id)
         {
-            var foundEducation = await _repository.GetByExpressionAsync(m=>m.Id == id);
-            await _repository.DeleteAsync(foundEducation);
+            try
+            {
+                var foundEducation = await _repository.GetByExpressionAsync(m => m.Id == id);
+                if (foundEducation is null) throw new NotFoundException("Course was not found");
+                await _repository.DeleteAsync(foundEducation);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
         }
 
         public async Task<List<Education>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var educations = await _repository.GetAllAsync();
+            if (educations.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            return educations;
         }
 
-        public async Task<List<Education>> GetAllWithGroupsAsync()
+        public async Task<List<EducationGroupDTO>> GetAllWithGroupsAsync()
         {
-            return await _repository.GetAllWithRelationsAsync();
+            var data = await _repository.GetAllWithGroups();
+            if (data.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+
+            var result = data.Select(m => new EducationGroupDTO
+            {
+                Education = m.Name,
+                Groups = m.Groups.Select(m => m.Name).ToList()
+            });
+            return result.ToList();
         }
 
         public async Task<Education> GetByIdAsync(int? id)
         {
-            return await _repository.GetByExpressionAsync(m=>m.Id == id);
+            var result = await _repository.GetByExpressionAsync(m=>m.Id == id);
+            if (result is null) throw new NotFoundException(ResponseMessages.NotFound);
+            return result;
         }
 
-        public async Task<List<Education>> SearchAsync(string searchText)
+        public async Task<List<EducationDTO>> SearchAsync(string searchText)
         {
-            return await _repository.SearchAsync(m => m.Name == searchText);
+            List<EducationDTO> educationDTOs = new();
+            var educations = await _repository.SearchAsync(m => m.Name.Trim().ToLower().Contains(searchText.Trim().ToLower()));
+            if (educations.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            foreach(var education in educations)
+            {
+                educationDTOs.Add(new EducationDTO { Name = education.Name, Color = education.Color });
+            }
+            return educationDTOs;
         }
 
         public async Task<List<Education>> SortWithCreatedDate(int orderType)
         {
             var educations = await _repository.GetAllAsync();
+            if (educations.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
             if(orderType == (int)OrderTypes.Ascending)
             {
                 return educations.OrderBy(m=>m.CreatedDate).ToList();
@@ -66,6 +104,7 @@ namespace Service.Services
         public async Task<Education> UpdateAsync(int? id)
         {
             Education education = await _repository.UpdateAsync(id, await _repository.GetByExpressionAsync(m => m.Id == id));
+            if (education is null) throw new NotFoundException(ResponseMessages.NotFound + "Update Failed");
             return education;
         }
     }

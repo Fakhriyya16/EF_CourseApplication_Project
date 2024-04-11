@@ -1,7 +1,10 @@
 ﻿using Domain.Models;
 using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
+using Service.DTOs;
+using Service.Helpers.Constants;
 using Service.Helpers.Enums;
+using Service.Helpers.Exceptions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,52 +23,92 @@ namespace Service.Services
         }
         public async Task CreateAsync(Group group)
         {
-            await _repository.CreateAsync(group);
+            try
+            {
+                await _repository.CreateAsync(group);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
         }
 
         public async Task DeleteAsync(int? id)
         {
-            var foundGroup = await _repository.GetByExpressionAsync(m => m.Id == id);
-            await _repository.DeleteAsync(foundGroup);
+            try
+            {
+                var foundGroup = await _repository.GetByExpressionAsync(m => m.Id == id);
+                await _repository.DeleteAsync(foundGroup);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
         }
 
         public async Task<List<Group>> FilterByEducationNameAsync(string groupName)
         {
-            return await _repository.GetAllByExpressionAsync(m=> m.Education.Name == groupName);
+            var result = await _repository.GetAllByExpressionAsync(m=> m.Education.Name == groupName);
+            if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            return result;
         }
 
         public async Task<List<Group>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var result = await _repository.GetAllWithEducationName();
+            if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            return result;
         }
 
-        public async Task<List<Group>> GetAllWithEducationIdAsync(int? id)
+        public async Task<List<GroupDTO>> GetAllWithEducationIdAsync(int? id)
         {
-            return await _repository.GetAllByExpressionAsync(m=>m.EducationId == id);
+            List<GroupDTO> groupDTOs = new();
+            var result = await _repository.GetAllByExpressionAsync(m=>m.EducationId == id);
+            if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            foreach(var item in result)
+            {
+                groupDTOs.Add(new GroupDTO { Name = item.Name,Capacity = item.Capacity });
+            }
+            return groupDTOs;
         }
 
         public async Task<Group> GetByIdAsync(int? id)
         {
-            return await _repository.GetByExpressionAsync(m=>m.Id == id);
+            var result = await _repository.GetByExpressionAsync(m=>m.Id == id);
+            if (result is null) throw new NotFoundException(ResponseMessages.NotFound);
+            return result;
         }
 
-        public async Task<List<Group>> SearchAsync(string searchName)
+        public async Task<List<GroupDTO>> SearchAsync(string searchName)
         {
-            return await _repository.GetAllByExpressionAsync(m => m.Name == searchName);
+            List<GroupDTO> groupDTOs = new();
+            var result = await _repository.GetAllByExpressionAsync(m => m.Name.Trim().ToLower().Contains(searchName.Trim().ToLower()));
+            if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            foreach (var groupDTO in result)
+            {
+                groupDTOs.Add(new GroupDTO { Name = groupDTO.Name, Capacity = groupDTO.Capacity });
+            }
+            return groupDTOs;
         }
 
-        public async Task<List<Group>> SortWithCapacityAsync(int? orderType)
+        public async Task<List<GroupDTO>> SortWithCapacityAsync(int? orderType)
         {
+            List<GroupDTO> groupDTOs = new();
             var groups = await _repository.GetAllAsync();
+            if (groups.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
+            foreach(var groupDTO in groups)
+            {
+                groupDTOs.Add(new GroupDTO { Name=groupDTO.Name,Capacity = groupDTO.Capacity });
+            }
             if (orderType == (int)OrderTypes.Ascending)
             {
-                return groups.OrderBy(m => m.Capacity).ToList();
+                return groupDTOs.OrderBy(m => m.Capacity).ToList();
             }
             else if (orderType == (int)OrderTypes.Descending)
             {
-                return groups.OrderByDescending(m => m.Capacity).ToList();
+                return groupDTOs.OrderByDescending(m => m.Capacity).ToList();
             }
-            return groups;
+            return groupDTOs;
         }
 
         public async Task<Group> UpdateAsync(int? id)

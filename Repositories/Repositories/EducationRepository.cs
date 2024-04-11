@@ -1,4 +1,6 @@
 ﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Data;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,5 +12,14 @@ namespace Repositories.Repositories
 {
     public class EducationRepository : BaseRepository<Education>, IEducationRepository
     {
+        private readonly AppDbContext _appDbContext;
+        public EducationRepository()
+        {
+            _appDbContext = new AppDbContext();
+        }
+        public async Task<List<Education>> GetAllWithGroups()
+        {
+            return await _appDbContext.Educations.Include(m => m.Groups).ToListAsync();
+        }
     }
 }

@@ -42,18 +42,6 @@ namespace Repositories.Repositories
             return result;
         }
 
-        public async Task<List<T>> GetAllWithRelationsAsync(params Expression<Func<T, object>>[] includeProperties)
-        {
-            IQueryable<T> query = _appDbContext.Set<T>();
-
-            foreach (var includeProperty in includeProperties)
-            {
-                query = query.Include(includeProperty);
-            }
-
-            return await query.ToListAsync();
-        }
-
         public async Task<T> GetByExpressionAsync(Func<T, bool> predicate)
         {
             var datas = await _appDbContext.Set<T>().ToListAsync();

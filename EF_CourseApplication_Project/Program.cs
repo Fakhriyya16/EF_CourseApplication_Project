@@ -1,4 +1,5 @@
 ﻿using EF_CourseApplication_Project.Controllers;
+using Service.Helpers.Constants;
 using Service.Helpers.Enums;
 using Service.Helpers.Extensions;
 
@@ -27,14 +28,28 @@ OperationType: string operationTypeStr = Console.ReadLine();
         ConsoleColor.Red.ConsoleMessage("Wront format");
         goto OperationType;
     }
+    if(operationType > 2 || operationType < 0)
+    {
+        ConsoleColor.Red.ConsoleMessage("Please choose again:");
+        goto IntroMenu;
+    }
 
     switch (operationType)
     {
         case (int)IntroMenuEnums.Register:
-            userController.Register();
+            await userController.Register();
             goto IntroMenu;
         case (int)IntroMenuEnums.Login:
-            userController.Login(); 
+            try
+            {
+                await userController.Login();
+            }
+            catch (Exception ex)
+            {
+                ConsoleColor.Red.ConsoleMessage(ex.Message);
+                goto IntroMenu;
+            }
+
         MainMenu: MainMenu();
         MainOperationType: string mainOperationTypeStr = Console.ReadLine();
             int mainOperationType;
@@ -48,55 +63,55 @@ OperationType: string operationTypeStr = Console.ReadLine();
             switch (mainOperationType)
             {
                 case (int)MainMenuEnums.CreateEducation:
-                    educationController.CreateAsync();
+                    await educationController.CreateAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.DeleteEducation:
-                    educationController.DeleteAsync();
+                    await educationController.DeleteAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.UpdateEducation:
-                    educationController.UpdateAsync();
+                    await educationController.UpdateAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetAllEducation:
-                    educationController.GetAllAsync();
+                    await educationController.GetAllAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetByIdEducation:
-                    educationController.GetByIdAsync();
+                    await educationController.GetByIdAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.SearchEducation:
-                    educationController.SearchAsync();
+                    await educationController.SearchAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetAllWithGroupsEducation:
-                    educationController.GetAllWithGroups();
+                    await educationController.GetAllWithGroups();
                     goto MainMenu;
                 case (int)MainMenuEnums.SortEducation:
-                    educationController.SortWithCreatedDate();
+                    await educationController.SortWithCreatedDate();
                     goto MainMenu;
                 case (int)MainMenuEnums.CreateGroup:
-                    groupController.CreateAsync();
+                    await groupController.CreateAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.DeleteGroup:
-                    groupController.DeleteAsync();
+                    await groupController.DeleteAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.UpdateGroup:
-                    groupController.UpdateAsync();
+                    await groupController.UpdateAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetAllGroups:
-                    groupController.GetAllAsync();
+                    await groupController.GetAllAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetByIdGroup:
-                    groupController.GetByIdAsync();
+                    await groupController.GetByIdAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.SearchGroup:
-                    groupController.SearchAsync();
+                    await groupController.SearchAsync();
                     goto MainMenu;
                 case (int)MainMenuEnums.FilterByEducationName:
-                    groupController.FilterByEducationName();
+                    await groupController.FilterByEducationName();
                     goto MainMenu;
                 case (int)MainMenuEnums.GetByEducationId:
-                    groupController.GetAllByEducationId();
+                    await groupController.GetAllByEducationId();
                     goto MainMenu;
                 case (int)MainMenuEnums.SortByCapacity:
-                    groupController.SortByCapacity();
+                    await groupController.SortByCapacity();
                     goto MainMenu;
             }
         break;

@@ -9,5 +9,6 @@ namespace Repositories.Repositories.Interfaces
 {
     public interface IEducationRepository : IBaseRepository<Education>
     {
+        public Task<List<Education>> GetAllWithGroups();
     }
 }

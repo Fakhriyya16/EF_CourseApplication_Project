@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,10 +15,11 @@ namespace Service.Services.Interfaces
         public Task<Group> GetByIdAsync(int? id);
         public Task DeleteAsync(int? id);
         public Task<Group> UpdateAsync(int? id);
-        public Task<List<Group>> SearchAsync(string searchName);
+        public Task<List<GroupDTO>> SearchAsync(string searchName); 
         public Task<List<Group>> FilterByEducationNameAsync(string groupName);
-        public Task<List<Group>> GetAllWithEducationIdAsync(int? id);
-        public Task<List<Group>> SortWithCapacityAsync(int? orderType);
+        //public Task<List<GroupDTO>> FilterByEducationNameAsync(string groupName); MIXEDDTO (GROUP NAME,EDUCATION NAME)
+        public Task<List<GroupDTO>> GetAllWithEducationIdAsync(int? id);
+        public Task<List<GroupDTO>> SortWithCapacityAsync(int? orderType); 
         public Task CreateAsync(Group group);
 
     }

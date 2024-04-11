@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,9 @@ namespace Service.Services.Interfaces
         public Task<Education> GetByIdAsync(int? id);
         public Task DeleteAsync(int? id);
         public Task<Education> UpdateAsync(int? id);
-        public Task<List<Education>> SearchAsync(string searchText);
-        public Task<List<Education>> GetAllWithGroupsAsync();
+        public Task<List<EducationDTO>> SearchAsync(string searchText);
+        //public Task<List<Education>> GetAllWithGroupsAsync();
+        public Task<List<EducationGroupDTO>> GetAllWithGroupsAsync();
         public Task<List<Education>> SortWithCreatedDate(int orderType);
     }
 }
