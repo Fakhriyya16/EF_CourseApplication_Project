@@ -14,7 +14,6 @@ namespace Repositories.Repositories.Interfaces
         Task DeleteAsync(T entity);
         Task<T> UpdateAsync(int? id,T entity);
         Task<List<T>> GetAllAsync();
-        Task<List<T>> GetAllWithRelationsAsync(params Expression<Func<T, object>>[] includeProperties);
         Task<List<T>> GetAllByExpressionAsync(Func<T, bool> predicate);
         Task<T> GetByExpressionAsync(Func<T, bool> predicate);
         Task<List<T>> SearchAsync(Func<T, bool> predicate);

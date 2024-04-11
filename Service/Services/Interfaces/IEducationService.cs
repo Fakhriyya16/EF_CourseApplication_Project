@@ -16,7 +16,6 @@ namespace Service.Services.Interfaces
         public Task DeleteAsync(int? id);
         public Task<Education> UpdateAsync(int? id);
         public Task<List<EducationDTO>> SearchAsync(string searchText);
-        //public Task<List<Education>> GetAllWithGroupsAsync();
         public Task<List<EducationGroupDTO>> GetAllWithGroupsAsync();
         public Task<List<Education>> SortWithCreatedDate(int orderType);
     }

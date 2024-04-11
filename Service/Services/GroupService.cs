@@ -46,11 +46,16 @@ namespace Service.Services
             }
         }
 
-        public async Task<List<Group>> FilterByEducationNameAsync(string groupName)
+        public async Task<List<GroupDTO>> FilterByEducationNameAsync(string groupName)
         {
+            List<GroupDTO> groupDTOs = new();
             var result = await _repository.GetAllByExpressionAsync(m=> m.Education.Name == groupName);
             if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
-            return result;
+            foreach(var item in result)
+            {
+                groupDTOs.Add(new GroupDTO { Name = item.Name,Capacity = item.Capacity });
+            }
+            return groupDTOs;
         }
 
         public async Task<List<Group>> GetAllAsync()

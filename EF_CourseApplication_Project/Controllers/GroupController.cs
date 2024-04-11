@@ -261,7 +261,7 @@ namespace EF_CourseApplication_Project.Controllers
                 var groups = await _groupService.FilterByEducationNameAsync(educationName);
                 foreach (var group in groups)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDisplay, group.Id, group.Name, group.Capacity, group.Education.Name, group.CreatedDate));
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO,group.Name, group.Capacity));
                 }
             }
             catch (Exception ex)
