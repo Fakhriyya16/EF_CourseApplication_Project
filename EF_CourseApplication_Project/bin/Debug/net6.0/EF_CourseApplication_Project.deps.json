@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "EF_CourseApplication_Project/1.0.0": {
         "dependencies": {
+          "ConsoleTables": "2.6.1",
           "Microsoft.EntityFrameworkCore": "6.0.28",
           "Microsoft.EntityFrameworkCore.Design": "6.0.28",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.28",
@@ -16,6 +17,14 @@
         },
         "runtime": {
           "EF_CourseApplication_Project.dll": {}
+        }
+      },
+      "ConsoleTables/2.6.1": {
+        "runtime": {
+          "lib/netstandard2.1/ConsoleTables.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.6.1.0"
+          }
         }
       },
       "Humanizer.Core/2.8.26": {
@@ -525,6 +534,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "ConsoleTables/2.6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TyU885plpk88kMxgayy5+QQvtt/t3ZR45+vSvaKqZiaK+YsGVE6Mv7sV3fwjUMv3jHT15DdkpxW/+o+uc+bAJQ==",
+      "path": "consoletables/2.6.1",
+      "hashPath": "consoletables.2.6.1.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",

@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using ConsoleTables;
+using Domain.Models;
 using Service.Helpers.Constants;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
@@ -42,6 +43,11 @@ namespace EF_CourseApplication_Project.Controllers
         EducationId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education course,you want to delete:");
             string educationIdStr = Console.ReadLine();
             int educationId;
+            if (string.IsNullOrWhiteSpace(educationIdStr))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto EducationId;
+            }
 
             bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
             if (!isCorrectFormat)
@@ -59,6 +65,7 @@ namespace EF_CourseApplication_Project.Controllers
             {
                 var educations = await _educationService.GetAllAsync();
                 if (educations.Count == 0) throw new NotFoundException("Data was not found");
+
                 foreach (var education in educations)
                 {
                     ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
@@ -75,7 +82,7 @@ namespace EF_CourseApplication_Project.Controllers
             var result = await _educationService.GetAllWithGroupsAsync();
             foreach (var item in result)
             {
-                string resultStr = item.Education + "-" + "Groups:" + string.Join(", ", item.Groups);
+                string resultStr = item.Education + " - " + "Groups: " + string.Join(", ", item.Groups);
                 ConsoleColor.Yellow.ConsoleMessage(resultStr);
             }
         }
@@ -87,6 +94,11 @@ namespace EF_CourseApplication_Project.Controllers
             EducationId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education:");
                 string educationIdStr = Console.ReadLine();
                 int educationId;
+                if (string.IsNullOrWhiteSpace(educationIdStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto EducationId;
+                }
 
                 bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
                 if (!isCorrectFormat)
@@ -134,6 +146,11 @@ namespace EF_CourseApplication_Project.Controllers
             OrderNumber: ConsoleColor.Cyan.ConsoleMessage("Choose the sorting format:\nType 1 for ascending order\nType 2 for descending order");
                 string orderNumStr = Console.ReadLine();
                 int orderNum;
+                if(string.IsNullOrWhiteSpace(orderNumStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto OrderNumber;
+                }
 
                 bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
                 if (isCorrectFormat)
@@ -166,6 +183,11 @@ namespace EF_CourseApplication_Project.Controllers
         EducationId: ConsoleColor.Cyan.ConsoleMessage("Enter id of the education course, you want to update:");
             string educationIdStr = Console.ReadLine();
             int educationId;
+            if (string.IsNullOrWhiteSpace(educationIdStr))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto EducationId;
+            }
 
             bool isCorrectFormat = int.TryParse(educationIdStr, out educationId);
             if (!isCorrectFormat)

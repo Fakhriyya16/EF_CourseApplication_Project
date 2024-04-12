@@ -19,7 +19,41 @@ namespace Repositories.Repositories
         }
         public async Task<List<Group>> GetAllWithEducationName()
         {
+            return await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
+        }
+
+        public async Task<Group> UpdateGroupAsync(int? id, Group group)
+        {
+            var existingGroup = _appDbContext.Groups.Include(m => m.Education).FirstOrDefault(m => m.Id == id);
+            await _appDbContext.SaveChangesAsync();
+            return existingGroup;
+        }
+        public async Task<Group> GetByExpressionAsync(Func<Group, bool> predicate)
+        {
+            var datas = await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
+            var result = datas.FirstOrDefault(predicate);
+            return result;
+        }
+
+        ///////////////////////
+
+        public async Task<List<Group>> GetAllAsync()
+        {
             return await _appDbContext.Groups.Include(m=>m.Education).ToListAsync();
         }
+
+        public async Task<List<Group>> GetAllByExpressionAsync(Func<Group, bool> predicate)
+        {
+            var datas = await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
+            var result = datas.Where(predicate).ToList();
+            return result;
+        }
+        public async Task<List<Group>> SearchAsync(Func<Group, bool> predicate)
+        {
+            var datas = await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
+            var result = datas.Where(predicate).ToList();
+            return result;
+        }
+
     }
 }

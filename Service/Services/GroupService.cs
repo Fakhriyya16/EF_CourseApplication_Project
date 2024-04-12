@@ -118,7 +118,9 @@ namespace Service.Services
 
         public async Task<Group> UpdateAsync(int? id)
         {
-            Group group = await _repository.UpdateAsync(id, await _repository.GetByExpressionAsync(m => m.Id == id));
+            if (id is  null) throw new ArgumentNullException("id");
+            Group group = await _repository.UpdateGroupAsync(id, await _repository.GetByExpressionAsync(m => m.Id == id));
+            if (group is null) throw new NotFoundException(ResponseMessages.NotFound);
             return group;
         }
     }

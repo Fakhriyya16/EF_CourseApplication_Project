@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "inuN6BR1A7lC4DtWj2vTPsWz4dBak1gu70SEfyxKb+WvD3IGpRmHwQ5z83SLblfYP8QvThhD3Y5Gh8Y3gcIurA==",
+  "dgSpecHash": "AET3tcASBBM8kLKNXV6rUnkFIkT6K5jQlilW94MThfAON84rhxI8dnhPdydw7wv51TcUMzfsXAD7YCkCstRxRg==",
   "success": true,
   "projectFilePath": "D:\\VS\\EF_CourseApplication_Project\\EF_CourseApplication_Project\\EF_CourseApplication_Project.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Faxriyya\\.nuget\\packages\\consoletables\\2.6.1\\consoletables.2.6.1.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.7\\microsoft.data.sqlclient.2.1.7.nupkg.sha512",

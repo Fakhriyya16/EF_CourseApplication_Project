@@ -64,3 +64,4 @@ D:\VS\EF_CourseApplication_Project\EF_CourseApplication_Project\obj\Debug\net6.0
 D:\VS\EF_CourseApplication_Project\EF_CourseApplication_Project\obj\Debug\net6.0\EF_CourseApplication_Project.pdb
 D:\VS\EF_CourseApplication_Project\EF_CourseApplication_Project\obj\Debug\net6.0\EF_CourseApplication_Project.genruntimeconfig.cache
 D:\VS\EF_CourseApplication_Project\EF_CourseApplication_Project\obj\Debug\net6.0\ref\EF_CourseApplication_Project.dll
+D:\VS\EF_CourseApplication_Project\EF_CourseApplication_Project\bin\Debug\net6.0\ConsoleTables.dll

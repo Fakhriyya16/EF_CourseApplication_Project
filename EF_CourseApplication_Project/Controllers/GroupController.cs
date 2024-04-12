@@ -1,15 +1,9 @@
 ﻿using Domain.Models;
 using Service.Helpers.Constants;
+using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Service.Services;
 using Service.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Group = Domain.Models.Group;
 
 namespace EF_CourseApplication_Project.Controllers
@@ -17,51 +11,80 @@ namespace EF_CourseApplication_Project.Controllers
     public class GroupController
     {
         private readonly IGroupService _groupService;
+        private readonly IEducationService _educationService;
         public GroupController()
         {
             _groupService = new GroupService();
+            _educationService = new EducationService();
         }
         public async Task CreateAsync()
         {
-        Name: ConsoleColor.Cyan.ConsoleMessage("Create name: ");
-            string groupName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(groupName))
+            try
             {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
-                goto Name;
+            Name: ConsoleColor.Cyan.ConsoleMessage("Create name: ");
+                string groupName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(groupName))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Name;
+                }
+
+            GroupCapacity: ConsoleColor.Cyan.ConsoleMessage("Add capacity: ");
+                string groupCapacityStr = Console.ReadLine();
+                int groupCapacity;
+                if (string.IsNullOrWhiteSpace(groupCapacityStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto GroupCapacity;
+                }
+
+                bool isCorrect = int.TryParse(groupCapacityStr, out groupCapacity);
+                if (!isCorrect)
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto GroupCapacity;
+                }
+
+            EducationId: ConsoleColor.Cyan.ConsoleMessage("Add education Id: ");
+                ConsoleColor.Cyan.ConsoleMessage("Available educations: ");
+                var availableEducations = await _educationService.GetAllAsync();
+                if (availableEducations.Count == 0) throw new NotFoundException("Data was not found");
+
+                foreach (var education in availableEducations)
+                {
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                }
+                string educationIdStr = Console.ReadLine();
+                int educationId;
+
+                isCorrect = int.TryParse(educationIdStr, out educationId);
+                if (!isCorrect)
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto EducationId;
+                }
+                var chosenEducation = await _educationService.GetByIdAsync(educationId);
+                if (chosenEducation is null) throw new NotFoundException(ResponseMessages.NotFound);
+
+                Group group = new Group { Name = groupName, Capacity = groupCapacity, EducationId = educationId };
+                await _groupService.CreateAsync(group);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
             }
-
-        GroupCapacity: ConsoleColor.Cyan.ConsoleMessage("Add capacity: ");
-            string groupCapacityStr = Console.ReadLine();
-            int groupCapacity;
-
-            bool isCorrect = int.TryParse(groupCapacityStr, out groupCapacity);
-            if (!isCorrect)
+            catch (Exception ex)
             {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
-                goto GroupCapacity;
+                await Console.Out.WriteLineAsync(ex.Message);
             }
-
-        EducationId: ConsoleColor.Cyan.ConsoleMessage("Add education Id: ");
-            string educationIdStr = Console.ReadLine();
-            int educationId;
-
-            isCorrect = int.TryParse(educationIdStr, out educationId);
-            if (!isCorrect)
-            {
-                ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
-                goto EducationId;
-            }
-
-            Group group = new Group { Name = groupName, Capacity = groupCapacity, EducationId = educationId };
-            await _groupService.CreateAsync(group);
-            await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }
         public async Task DeleteAsync()
         {
         GroupId: ConsoleColor.Cyan.ConsoleMessage("Enter id of the group, you want to delete:");
             string groupIdStr = Console.ReadLine();
             int groupId;
+            if (string.IsNullOrWhiteSpace(groupIdStr))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto GroupId;
+            }
 
             bool isCorrectFormat = int.TryParse(groupIdStr, out groupId);
             if (!isCorrectFormat)
@@ -95,6 +118,11 @@ namespace EF_CourseApplication_Project.Controllers
             GroupId: ConsoleColor.Cyan.ConsoleMessage("Add id of the education course:");
                 string groupIdStr = Console.ReadLine();
                 int groupId;
+                if (string.IsNullOrWhiteSpace(groupIdStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto GroupId;
+                }
 
                 bool isCorrectFormat = int.TryParse(groupIdStr, out groupId);
                 if (!isCorrectFormat)
@@ -140,6 +168,12 @@ namespace EF_CourseApplication_Project.Controllers
             OrderNumber: ConsoleColor.Cyan.ConsoleMessage("Choose the sorting format:\nType 1 for ascending order\nType 2 for descending order");
                 string orderNumStr = Console.ReadLine();
                 int orderNum;
+                if (string.IsNullOrWhiteSpace(orderNumStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto OrderNumber;
+                }
+
 
                 bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
                 if (isCorrectFormat)
@@ -173,6 +207,11 @@ namespace EF_CourseApplication_Project.Controllers
         GroupId: ConsoleColor.Cyan.ConsoleMessage("Enter id of the group, you want to update:");
             string groupIdStr = Console.ReadLine();
             int groupId;
+            if (string.IsNullOrWhiteSpace(groupIdStr))
+            {
+                ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto GroupId;
+            }
 
             bool isCorrectFormat = int.TryParse(groupIdStr, out groupId);
             if (!isCorrectFormat)
@@ -182,7 +221,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             try
             {
-                Group groupFound = await _groupService.GetByIdAsync(groupId);
+                Group groupFound = await _groupService.UpdateAsync(groupId);
 
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string groupNewName = Console.ReadLine();
@@ -213,13 +252,20 @@ namespace EF_CourseApplication_Project.Controllers
                     }
                     else
                     {
-                        {
-                            groupFound.Capacity = groupCapacity;
-                        }
+                        groupFound.Capacity = groupCapacity;
                     }
                 }
 
             EducationId: ConsoleColor.Cyan.ConsoleMessage("Update education Id: ");
+                ConsoleColor.Cyan.ConsoleMessage("Available Educations: ");
+                var availableEducations = await _educationService.GetAllAsync();
+                if (availableEducations.Count == 0) throw new NotFoundException("Data was not found");
+
+                foreach (var education in availableEducations)
+                {
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                }
+
                 string groupEducationIdStr = Console.ReadLine();
                 int groupEducationId;
                 if (string.IsNullOrWhiteSpace(groupEducationIdStr))
@@ -236,7 +282,11 @@ namespace EF_CourseApplication_Project.Controllers
                     }
                     else
                     {
-                        groupFound.EducationId = groupEducationId;
+                        var chosenEducation = await _educationService.UpdateAsync(groupEducationId);
+                        if (chosenEducation is null) throw new NotFoundException(ResponseMessages.NotFound);
+                        groupFound.EducationId = chosenEducation.Id;
+                        groupFound.Education.Name = chosenEducation.Name;
+                        
                     }
                     await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
                 }
@@ -261,7 +311,7 @@ namespace EF_CourseApplication_Project.Controllers
                 var groups = await _groupService.FilterByEducationNameAsync(educationName);
                 foreach (var group in groups)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO,group.Name, group.Capacity));
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
                 }
             }
             catch (Exception ex)
@@ -276,6 +326,11 @@ namespace EF_CourseApplication_Project.Controllers
             EducationId: ConsoleColor.Cyan.ConsoleMessage("Enter education id:");
                 string educationIdStr = Console.ReadLine();
                 int educationId;
+                if (string.IsNullOrWhiteSpace(educationIdStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto EducationId;
+                }
 
                 bool isCorrect = int.TryParse(educationIdStr, out educationId);
                 if (!isCorrect)
@@ -286,7 +341,7 @@ namespace EF_CourseApplication_Project.Controllers
                 var groups = await _groupService.GetAllWithEducationIdAsync(educationId);
                 foreach (var group in groups)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO,group.Name, group.Capacity));
+                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
                 }
             }
             catch (Exception ex)
