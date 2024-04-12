@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EF_CourseApplication_Project.Controllers
@@ -30,6 +31,13 @@ namespace EF_CourseApplication_Project.Controllers
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
                     goto Name;
                 }
+                string namePattern = @"^[a-zA-Z]+(?: [a-zA-Z'-]+)*$";
+
+                if (!Regex.IsMatch(fullName, namePattern))
+                {
+                    ConsoleColor.Red.ConsoleMessage("Invalid Full Name.");
+                    goto Name;
+                }
 
             UserName: ConsoleColor.Cyan.ConsoleMessage("Create username:");
                 string username = Console.ReadLine();
@@ -46,12 +54,28 @@ namespace EF_CourseApplication_Project.Controllers
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
                     goto Email;
                 }
+                string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+                // Check if the email matches the pattern
+                if (!Regex.IsMatch(email, emailPattern))
+                {
+                    ConsoleColor.Red.ConsoleMessage("Invalid email address.");
+                    goto Email;
+                }
+
 
             Password: ConsoleColor.Cyan.ConsoleMessage("Create password:");
                 string password = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(password))
                 {
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto Password;
+                }
+                string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$";
+
+                if (!Regex.IsMatch(password, passwordPattern))
+                {
+                    ConsoleColor.Red.ConsoleMessage("Invalid password.");
                     goto Password;
                 }
 

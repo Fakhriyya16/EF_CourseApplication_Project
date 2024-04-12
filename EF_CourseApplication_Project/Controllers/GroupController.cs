@@ -178,7 +178,7 @@ namespace EF_CourseApplication_Project.Controllers
                 bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
                 if (isCorrectFormat)
                 {
-                    if (orderNum != 1 || orderNum != 2)
+                    if (orderNum != 1 && orderNum != 2)
                     {
                         ConsoleColor.Red.ConsoleMessage("Please choose again:");
                         goto OrderNumber;
@@ -282,7 +282,7 @@ namespace EF_CourseApplication_Project.Controllers
                     }
                     else
                     {
-                        var chosenEducation = await _educationService.UpdateAsync(groupEducationId);
+                        var chosenEducation = await _educationService.GetByIdAsync(groupEducationId);
                         if (chosenEducation is null) throw new NotFoundException(ResponseMessages.NotFound);
                         groupFound.EducationId = chosenEducation.Id;
                         groupFound.Education.Name = chosenEducation.Name;

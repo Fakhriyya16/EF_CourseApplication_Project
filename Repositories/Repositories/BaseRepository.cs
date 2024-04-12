@@ -60,6 +60,7 @@ namespace Repositories.Repositories
         {
             var datas = await _appDbContext.Set<T>().ToListAsync();
             var result = datas.FirstOrDefault(m=>m.Id == id);
+            await _appDbContext.SaveChangesAsync();
             return result;
         }
     }

@@ -28,7 +28,7 @@ OperationType: string operationTypeStr = Console.ReadLine();
         ConsoleColor.Red.ConsoleMessage("Wront format");
         goto OperationType;
     }
-    if(operationType > 2 || operationType < 0)
+    if(operationType > 2 || operationType <= 0)
     {
         ConsoleColor.Red.ConsoleMessage("Please choose again:");
         goto IntroMenu;

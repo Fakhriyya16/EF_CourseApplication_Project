@@ -155,7 +155,7 @@ namespace EF_CourseApplication_Project.Controllers
                 bool isCorrectFormat = int.TryParse(orderNumStr, out orderNum);
                 if (isCorrectFormat)
                 {
-                    if (orderNum != 1 || orderNum != 2)
+                    if (orderNum != 1 && orderNum != 2)
                     {
                         ConsoleColor.Red.ConsoleMessage("Please choose again");
                         goto OrderNumber;
