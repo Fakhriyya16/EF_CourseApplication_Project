@@ -125,19 +125,9 @@ namespace Service.Services
             return groupDTOs;
         }
 
-        public async Task UpdateGroup(int groupId, string newGroupName, int newCapacity, int newEducationId)
+        public async Task UpdateGroup(Group group)
         {
-            Group group =  _appDbContext.Groups.Include(m => m.Education).FirstOrDefault(m => m.Id == groupId);
-            if (group != null)
-            {
-                if (!string.IsNullOrWhiteSpace(newGroupName)) group.Name = newGroupName;               
-                if (newCapacity != 0) group.Capacity = newCapacity;
-                if(newEducationId != 0)
-                {
-                    group.EducationId = newEducationId;
-                }
-                await _repository.UpdateGroup(group);
-            }
+            await _repository.UpdateGroup(group);
         }
     }
 }

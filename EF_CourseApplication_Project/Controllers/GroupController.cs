@@ -223,12 +223,18 @@ namespace EF_CourseApplication_Project.Controllers
 
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string groupNewName = Console.ReadLine();
+                if(!string.IsNullOrWhiteSpace(groupNewName))
+                {
+                    groupFound.Name = groupNewName;
+                }
 
             GroupCapacity: ConsoleColor.Cyan.ConsoleMessage("Update capacity: ");
                 string groupCapacityStr = Console.ReadLine();
                 int groupCapacity;
                 if (string.IsNullOrWhiteSpace(groupCapacityStr))
+                {
                     groupCapacity = 0;
+                }
                 else
                 {
                     isCorrectFormat = int.TryParse(groupCapacityStr, out groupCapacity);
@@ -237,6 +243,10 @@ namespace EF_CourseApplication_Project.Controllers
                         ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                         goto GroupCapacity;
                     }
+                }
+                if(groupCapacity != 0)
+                {
+                    groupFound.Capacity = groupCapacity;
                 }
                 
             EducationId: ConsoleColor.Cyan.ConsoleMessage("Update education Id: ");
@@ -252,7 +262,9 @@ namespace EF_CourseApplication_Project.Controllers
                 string groupEducationIdStr = Console.ReadLine();
                 int groupEducationId;
                 if (string.IsNullOrWhiteSpace(groupEducationIdStr))
+                {
                     groupEducationId = 0;
+                }                  
                 else
                 {
                     isCorrectFormat = int.TryParse(groupEducationIdStr, out groupEducationId);
@@ -262,7 +274,11 @@ namespace EF_CourseApplication_Project.Controllers
                         goto EducationId;
                     }
                 }
-                await _groupService.UpdateGroup(groupId, groupNewName, groupCapacity, groupEducationId);
+                if(groupEducationId != 0)
+                {
+                    groupFound.EducationId = groupEducationId;
+                }
+                await _groupService.UpdateGroup(groupFound);
             }
 
             catch (Exception ex)

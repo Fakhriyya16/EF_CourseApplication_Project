@@ -47,8 +47,9 @@ namespace Repositories.Repositories
         }
         public async Task UpdateGroup(Group group)
         {
-
-            _appDbContext.SaveChanges();
+            _appDbContext.Entry(group).State = EntityState.Modified;
+            _appDbContext.ChangeTracker.AcceptAllChanges();
+            await _appDbContext.SaveChangesAsync();
         }
 
     }

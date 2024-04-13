@@ -19,6 +19,7 @@ namespace Repositories.Repositories
         }
         public async Task<List<Education>> GetAllWithGroups()
         {
+            _appDbContext.ChangeTracker.AcceptAllChanges();
             return await _appDbContext.Educations.Include(m => m.Groups).ToListAsync();
         }
     }

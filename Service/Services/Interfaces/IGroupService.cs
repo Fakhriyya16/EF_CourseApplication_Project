@@ -20,7 +20,7 @@ namespace Service.Services.Interfaces
         public Task<List<GroupDTO>> GetAllWithEducationIdAsync(int? id);
         public Task<List<GroupDTO>> SortWithCapacityAsync(int? orderType); 
         public Task CreateAsync(Group group);
-        public Task UpdateGroup(int groupId, string newGroupName, int newCapacity, int newEducationId);
+        public Task UpdateGroup(Group group);
 
     }
 }
