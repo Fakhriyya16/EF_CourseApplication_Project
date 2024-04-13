@@ -31,7 +31,7 @@ namespace EF_CourseApplication_Project.Controllers
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
                     goto Name;
                 }
-                string namePattern = @"^[a-zA-Z]+(?: [a-zA-Z'-]+)*$";
+                string namePattern = @"^[A-Z]+(?: [a-zA-Z'-]+)*$";
 
                 if (!Regex.IsMatch(fullName, namePattern))
                 {

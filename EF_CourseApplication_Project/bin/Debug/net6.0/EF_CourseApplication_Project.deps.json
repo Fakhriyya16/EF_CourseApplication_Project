@@ -521,6 +521,7 @@
       },
       "Service/1.0.0": {
         "dependencies": {
+          "ConsoleTables": "2.6.1",
           "Repositories": "1.0.0"
         },
         "runtime": {

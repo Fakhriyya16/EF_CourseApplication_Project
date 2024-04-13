@@ -5,6 +5,7 @@ using Service.DTOs;
 using Service.Helpers.Constants;
 using Service.Helpers.Enums;
 using Service.Helpers.Exceptions;
+using Service.Helpers.Extensions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Service.Services
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
 
@@ -40,10 +41,11 @@ namespace Service.Services
                 var foundEducation = await _repository.GetByExpressionAsync(m => m.Id == id);
                 if (foundEducation is null) throw new NotFoundException("Course was not found");
                 await _repository.DeleteAsync(foundEducation);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
 

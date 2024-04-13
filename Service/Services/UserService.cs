@@ -3,6 +3,7 @@ using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
 using Service.Helpers.Constants;
 using Service.Helpers.Exceptions;
+using Service.Helpers.Extensions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace Service.Services
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
                 return false;
             }
         }
@@ -52,7 +53,7 @@ namespace Service.Services
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
 
         }

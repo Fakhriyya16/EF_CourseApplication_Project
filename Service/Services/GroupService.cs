@@ -5,6 +5,7 @@ using Service.DTOs;
 using Service.Helpers.Constants;
 using Service.Helpers.Enums;
 using Service.Helpers.Exceptions;
+using Service.Helpers.Extensions;
 using Service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Service.Services
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
 
@@ -38,18 +39,20 @@ namespace Service.Services
             try
             {
                 var foundGroup = await _repository.GetByExpressionAsync(m => m.Id == id);
+                if (foundGroup is null) throw new NotFoundException(ResponseMessages.NotFound);
                 await _repository.DeleteAsync(foundGroup);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
 
         public async Task<List<GroupDTO>> FilterByEducationNameAsync(string groupName)
         {
             List<GroupDTO> groupDTOs = new();
-            var result = await _repository.GetAllByExpressionAsync(m=> m.Education.Name == groupName);
+            var result = await _repository.GetAllByExpressionAsync(m=> m.Education.Name.Trim().ToLower() == groupName.Trim().ToLower());
             if (result.Count == 0) throw new NotFoundException(ResponseMessages.NotFound);
             foreach(var item in result)
             {

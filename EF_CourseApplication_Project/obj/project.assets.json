@@ -829,6 +829,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "ConsoleTables": "2.6.1",
           "Repositories": "1.0.0"
         },
         "compile": {

@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "k5MbZRQZs9WaMP3R9c5WKETa1+4v857n/BmNuAVhqYXCbQqfEaElRG6O8OpRr4ajx1p62imKWcqR4FGpLO9qSw==",
+  "dgSpecHash": "mlsX65G2pHhYwcPJtuIU1VLLOPpEj637EHK1waAuGU1ubeaGRhr0MrI26D8AkCazjqfDOl9c4hupvgQ7z5sTGg==",
   "success": true,
   "projectFilePath": "D:\\VS\\EF_CourseApplication_Project\\Service\\Service.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Faxriyya\\.nuget\\packages\\consoletables\\2.6.1\\consoletables.2.6.1.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.7\\microsoft.data.sqlclient.2.1.7.nupkg.sha512",
     "C:\\Users\\Faxriyya\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.1.1\\microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",

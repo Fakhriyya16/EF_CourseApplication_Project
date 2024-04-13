@@ -72,7 +72,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task DeleteAsync()
@@ -94,7 +94,6 @@ namespace EF_CourseApplication_Project.Controllers
             }
 
             await _groupService.DeleteAsync(groupId);
-            await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
         }
         public async Task GetAllAsync()
         {
@@ -108,7 +107,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task GetByIdAsync()
@@ -135,7 +134,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task SearchAsync()
@@ -158,7 +157,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task SortByCapacity()
@@ -198,7 +197,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task UpdateAsync()
@@ -293,7 +292,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task FilterByEducationName()
@@ -316,7 +315,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
         public async Task GetAllByEducationId()
@@ -346,7 +345,7 @@ namespace EF_CourseApplication_Project.Controllers
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using EF_CourseApplication_Project.Controllers;
+﻿using ConsoleTables;
+using EF_CourseApplication_Project.Controllers;
 using Service.Helpers.Constants;
 using Service.Helpers.Enums;
 using Service.Helpers.Extensions;
@@ -13,8 +14,20 @@ void IntroMenu()
 }
 void MainMenu()
 {
-    ConsoleColor.Magenta.ConsoleMessage("Education Operations\n1. Create Education\n2.Delete Education\n3.Update Education\n4.Get All Educations\n5.Get Education By Id\n6.Search Education\n7.Get All With Groups\n8.Sort By Created Date");
-    ConsoleColor.Magenta.ConsoleMessage("Group Operations\n9. Create group\n10. Delete Group\n11. Update Group\n12. Get All Groups\n13. Get Group By Id\n14. Search groups\n15. Filter By Education Name\n16. Get All Groups By Education Id\n17. Sort Groups By Capacity");
+    var table = new ConsoleTable("Education Operations", "Group Operations");
+
+    table.AddRow("1. Create Education", "9. Create Group")
+         .AddRow("2. Delete Education", "10. Delete Group")
+         .AddRow("3. Update Education", "11. Update Group")
+         .AddRow("4. Get All Educations", "12. Get All Groups")
+         .AddRow("5. Get Education By Id", "13. Get Group By Id")
+         .AddRow("6. Search Education", "14. Search Groups")
+         .AddRow("7. Get All With Groups", "15. Filter By Education Name")
+         .AddRow("8. Sort By Created Date", "16. Get All Groups By Education Id")
+         .AddRow(" ", "17. Sort Groups By Capacity");
+
+    table.Write();
+    ConsoleColor.Cyan.ConsoleMessage("Choose operation: ");
 }
 
 IntroMenu: IntroMenu();
