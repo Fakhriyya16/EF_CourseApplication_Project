@@ -9,7 +9,7 @@ namespace Service.Helpers.Constants
     public class ResponseMessages
     {
         public const string SuccessfullOperation = "Successfull Operation";
-        public const string WrongFormat = "Wrong Format:";
+        public const string WrongFormat = "Wrong Format";
         public const string EducationDisplay = "Id: {0}, Name: {1}, Color: {2}, Date of Creation: {3}";
         public const string GroupDisplay = "Id: {0}, Name: {1}, Capacity: {2}, Education Name: {3}, Date of Creation: {4}";
         public const string RegisterSuccess = "Successfull registration";

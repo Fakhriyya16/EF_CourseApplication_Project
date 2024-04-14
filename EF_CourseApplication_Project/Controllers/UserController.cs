@@ -97,6 +97,7 @@ namespace EF_CourseApplication_Project.Controllers
                 ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
                 goto Email;
             }
+            usernameOrEmail = usernameOrEmail.Trim().ToLower();
 
         Password: ConsoleColor.Cyan.ConsoleMessage("Enter your password:");
             string password = Console.ReadLine();

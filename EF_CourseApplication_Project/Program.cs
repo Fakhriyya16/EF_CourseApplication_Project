@@ -1,15 +1,10 @@
 ﻿using ConsoleTables;
 using EF_CourseApplication_Project.Controllers;
-using Service.Helpers.Constants;
 using Service.Helpers.Enums;
 using Service.Helpers.Extensions;
 
-EducationController educationController = new EducationController();
-GroupController groupController = new GroupController();
+
 UserController userController = new UserController();
-
-
-
 
 void IntroMenu()
 {
@@ -28,8 +23,8 @@ void MainMenu()
          .AddRow("7. Get All With Groups", "15. Filter By Education Name")
          .AddRow("8. Sort By Created Date", "16. Get All Groups By Education Id")
          .AddRow(" ", "17. Sort Groups By Capacity");
-
     table.Write();
+
     ConsoleColor.Cyan.ConsoleMessage("Choose operation: ");
 }
 
@@ -67,7 +62,8 @@ OperationType: string operationTypeStr = Console.ReadLine();
             }
 
         MainMenu: MainMenu();
-
+            EducationController educationController = new EducationController();
+            GroupController groupController = new GroupController();
         MainOperationType: string mainOperationTypeStr = Console.ReadLine();
 
             int mainOperationType;

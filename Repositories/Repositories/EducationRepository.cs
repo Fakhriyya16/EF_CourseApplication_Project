@@ -12,7 +12,7 @@ namespace Repositories.Repositories
         {
             _appDbContext = appDbContext;
         }
-        public async Task<List<Education>> GetAllWithGroups(string msg = null)
+        public async Task<List<Education>> GetAllWithGroups()
         {
             return await _appDbContext.Educations.Include(m=>m.Groups).ToListAsync();
         }

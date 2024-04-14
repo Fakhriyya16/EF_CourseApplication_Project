@@ -64,11 +64,13 @@ namespace EF_CourseApplication_Project.Controllers
             {
                 var educations = await _educationService.GetAllAsync();
                 if (educations.Count == 0) throw new NotFoundException("Data was not found");
+                var table = new ConsoleTable("Id", "Name", "Color", "Created Date");
 
                 foreach (var education in educations)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                    table.AddRow(education.Id, education.Name, education.Color, education.CreatedDate);
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -82,7 +84,7 @@ namespace EF_CourseApplication_Project.Controllers
             foreach (var item in result)
             {
                 string resultStr = item.Education + " - " + "Groups: " + string.Join(", ", item.Groups);
-                ConsoleColor.Yellow.ConsoleMessage(resultStr);
+                await ConsoleColor.Yellow.ConsoleMessage(resultStr);
             }
         }
 
@@ -107,7 +109,9 @@ namespace EF_CourseApplication_Project.Controllers
                 }
                 Education education = await _educationService.GetByIdAsync(educationId);
                 if (education is null) throw new NotFoundException("Data was not found");
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                var table = new ConsoleTable("Id", "Name", "Color", "Created Date");
+                table.AddRow(education.Id, education.Name, education.Color, education.CreatedDate);
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -128,10 +132,13 @@ namespace EF_CourseApplication_Project.Controllers
 
                 var educationsFound = await _educationService.SearchAsync(searchText);
                 if (educationsFound.Count == 0) throw new NotFoundException("Data was not found");
+                var table = new ConsoleTable("Name", "Color");
+
                 foreach (var education in educationsFound)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDTO,education.Name,education.Color));
+                    table.AddRow(education.Name, education.Color);
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -145,7 +152,7 @@ namespace EF_CourseApplication_Project.Controllers
             OrderNumber: ConsoleColor.Cyan.ConsoleMessage("Choose the sorting format:\nType 1 for ascending order\nType 2 for descending order");
                 string orderNumStr = Console.ReadLine();
                 int orderNum;
-                if(string.IsNullOrWhiteSpace(orderNumStr))
+                if (string.IsNullOrWhiteSpace(orderNumStr))
                 {
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
                     goto OrderNumber;
@@ -167,10 +174,13 @@ namespace EF_CourseApplication_Project.Controllers
                 }
 
                 var educationsSorted = await _educationService.SortWithCreatedDate(orderNum);
+                var table = new ConsoleTable("Id", "Name", "Color", "Created Date");
+
                 foreach (var education in educationsSorted)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.EducationDisplay, education.Id, education.Name, education.Color, education.CreatedDate));
+                    table.AddRow(education.Id, education.Name, education.Color, education.CreatedDate);
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -200,12 +210,12 @@ namespace EF_CourseApplication_Project.Controllers
 
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string educationNewName = Console.ReadLine();
-                
+
                 if (!string.IsNullOrWhiteSpace(educationNewName))
                 {
                     educationFound.Name = educationNewName;
                 }
-                
+
                 ConsoleColor.Cyan.ConsoleMessage("Update color: ");
                 string educationNewColor = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(educationNewColor))

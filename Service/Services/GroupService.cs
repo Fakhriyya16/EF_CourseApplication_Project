@@ -123,7 +123,16 @@ namespace Service.Services
 
         public async Task UpdateGroup(Group group)
         {
-            await _repository.UpdateAsync(group);
+            try
+            {
+                await _repository.UpdateAsync(group);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
+            }
+            catch (Exception ex)
+            {
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
+            }
+            
         }
     }
 }

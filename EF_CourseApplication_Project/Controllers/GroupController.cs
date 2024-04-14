@@ -1,10 +1,14 @@
 ﻿using Domain.Models;
+using ConsoleTables;
 using Service.Helpers.Constants;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Service.Services;
 using Service.Services.Interfaces;
 using Group = Domain.Models.Group;
+using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.RegularExpressions;
 
 namespace EF_CourseApplication_Project.Controllers
 {
@@ -42,6 +46,11 @@ namespace EF_CourseApplication_Project.Controllers
                 if (!isCorrect)
                 {
                     ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto GroupCapacity;
+                }
+                if (groupCapacity <= 0 || groupCapacity > 50)
+                {
+                    ConsoleColor.Red.ConsoleMessage("Invalid capacity amount");
                     goto GroupCapacity;
                 }
 
@@ -99,11 +108,13 @@ namespace EF_CourseApplication_Project.Controllers
         {
             try
             {
+                var table = new ConsoleTable("Id", "Name","Capacity","Education","Education Id","Created Date");
                 var groups = await _groupService.GetAllAsync();
                 foreach (var group in groups)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDisplay, group.Id, group.Name, group.Capacity, group.Education.Name, group.CreatedDate));
+                    table.AddRow(group.Id, group.Name,group.Capacity,group.Education.Name,group.EducationId,group.CreatedDate);
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -130,7 +141,9 @@ namespace EF_CourseApplication_Project.Controllers
                     goto GroupId;
                 }
                 Group group = await _groupService.GetByIdAsync(groupId);
-                ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDisplay, group.Id, group.Name, group.Capacity, group.Education.Name, group.CreatedDate));
+                var table = new ConsoleTable("Id", "Name", "Capacity", "Education", "Education Id", "Created Date");
+                table.AddRow(group.Id, group.Name, group.Capacity, group.Education.Name, group.EducationId, group.CreatedDate);
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -150,10 +163,14 @@ namespace EF_CourseApplication_Project.Controllers
                 }
 
                 var groupsFound = await _groupService.SearchAsync(searchText);
+
+                var table = new ConsoleTable("Name", "Capacity");
+
                 foreach (var group in groupsFound)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
+                    table.AddRow(group.Name, group.Capacity); ;
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -190,10 +207,13 @@ namespace EF_CourseApplication_Project.Controllers
                 }
 
                 var groupsSorted = await _groupService.SortWithCapacityAsync(orderNum);
+                var table = new ConsoleTable("Name", "Capacity");
+
                 foreach (var group in groupsSorted)
                 {
-                    ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
+                    table.AddRow(group.Name, group.Capacity);
                 }
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -223,8 +243,8 @@ namespace EF_CourseApplication_Project.Controllers
 
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string groupNewName = Console.ReadLine();
-                
-                if(!string.IsNullOrWhiteSpace(groupNewName))
+
+                if (!string.IsNullOrWhiteSpace(groupNewName))
                 {
                     groupFound.Name = groupNewName;
                 }
@@ -244,12 +264,17 @@ namespace EF_CourseApplication_Project.Controllers
                         ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                         goto GroupCapacity;
                     }
+                    if (groupCapacity <= 0 || groupCapacity > 50)
+                    {
+                        ConsoleColor.Red.ConsoleMessage("Invalid capacity amount");
+                        goto GroupCapacity;
+                    }
                 }
-                if(groupCapacity != 0)
+                if (groupCapacity != 0)
                 {
                     groupFound.Capacity = groupCapacity;
                 }
-                
+
             EducationId: ConsoleColor.Cyan.ConsoleMessage("Update education Id: ");
                 ConsoleColor.Cyan.ConsoleMessage("Available Educations: ");
                 var availableEducations = await _educationService.GetAllAsync();
@@ -262,11 +287,11 @@ namespace EF_CourseApplication_Project.Controllers
 
                 string groupEducationIdStr = Console.ReadLine();
                 int groupEducationId;
-                
+
                 if (string.IsNullOrWhiteSpace(groupEducationIdStr))
                 {
                     groupEducationId = 0;
-                }                  
+                }
                 else
                 {
                     isCorrectFormat = int.TryParse(groupEducationIdStr, out groupEducationId);
@@ -275,76 +300,82 @@ namespace EF_CourseApplication_Project.Controllers
                         ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                         goto EducationId;
                     }
-                    
+
                 }
-                if(groupEducationId != 0)
-                { 
+                if (groupEducationId != 0)
+                {
 
                     groupFound.EducationId = groupEducationId;
 
                     await _groupService.UpdateGroup(groupFound);
                 }
-                
+
             }
 
             catch (Exception ex)
             {
                 await ConsoleColor.Red.ConsoleMessage(ex.Message);
             }
-    
-        }
-public async Task FilterByEducationName()
-{
-    try
-    {
-    EducationName: ConsoleColor.Cyan.ConsoleMessage("Enter education name:");
-        string educationName = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(educationName))
-        {
-            ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
-            goto EducationName;
-        }
 
-        var groups = await _groupService.FilterByEducationNameAsync(educationName);
-        foreach (var group in groups)
-        {
-            ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
         }
-    }
-    catch (Exception ex)
-    {
-        await ConsoleColor.Red.ConsoleMessage(ex.Message);
-    }
-}
-public async Task GetAllByEducationId()
-{
-    try
-    {
-    EducationId: ConsoleColor.Cyan.ConsoleMessage("Enter education id:");
-        string educationIdStr = Console.ReadLine();
-        int educationId;
-        if (string.IsNullOrWhiteSpace(educationIdStr))
+        public async Task FilterByEducationName()
         {
-            ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
-            goto EducationId;
-        }
+            try
+            {
+            EducationName: ConsoleColor.Cyan.ConsoleMessage("Enter education name:");
+                string educationName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(educationName))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto EducationName;
+                }
 
-        bool isCorrect = int.TryParse(educationIdStr, out educationId);
-        if (!isCorrect)
-        {
-            ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
-            goto EducationId;
+                var groups = await _groupService.FilterByEducationNameAsync(educationName);
+                var table = new ConsoleTable("Name", "Capacity");
+
+                foreach (var group in groups)
+                {
+                    table.AddRow(group.Name, group.Capacity); ;
+                }
+                table.Write();
+            }
+            catch (Exception ex)
+            {
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
+            }
         }
-        var groups = await _groupService.GetAllWithEducationIdAsync(educationId);
-        foreach (var group in groups)
+        public async Task GetAllByEducationId()
         {
-            ConsoleColor.Yellow.ConsoleMessage(string.Format(ResponseMessages.GroupDTO, group.Name, group.Capacity));
+            try
+            {
+            EducationId: ConsoleColor.Cyan.ConsoleMessage("Enter education id:");
+                string educationIdStr = Console.ReadLine();
+                int educationId;
+                if (string.IsNullOrWhiteSpace(educationIdStr))
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                    goto EducationId;
+                }
+
+                bool isCorrect = int.TryParse(educationIdStr, out educationId);
+                if (!isCorrect)
+                {
+                    ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
+                    goto EducationId;
+                }
+                var groups = await _groupService.GetAllWithEducationIdAsync(educationId);
+                var table = new ConsoleTable("Name", "Capacity");
+
+                foreach (var group in groups)
+                {
+                    table.AddRow(group.Name, group.Capacity); ;
+                }
+                table.Write();
+            }
+            catch (Exception ex)
+            {
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
+            }
         }
-    }
-    catch (Exception ex)
-    {
-        await ConsoleColor.Red.ConsoleMessage(ex.Message);
-    }
-}
     }
 }

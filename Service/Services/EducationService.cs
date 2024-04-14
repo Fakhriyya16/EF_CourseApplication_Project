@@ -105,7 +105,15 @@ namespace Service.Services
 
         public async Task UpdateAsync(Education education)
         {
-            await _repository.UpdateAsync(education);
+            try
+            {
+                await _repository.UpdateAsync(education);
+                await ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
+            }
+            catch (Exception ex)
+            {
+                await ConsoleColor.Red.ConsoleMessage(ex.Message);
+            }
         }
     }
 }
