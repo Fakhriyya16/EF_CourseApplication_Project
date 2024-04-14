@@ -15,9 +15,9 @@ namespace Repositories.Repositories
     {
         private readonly AppDbContext _appDbContext;
 
-        public UserRepository()
+        public UserRepository(AppDbContext appDbContext):base(appDbContext)
         {
-            _appDbContext = new AppDbContext();
+            _appDbContext = appDbContext;
         }
         public async Task<List<User>> LoginAsync()
         {

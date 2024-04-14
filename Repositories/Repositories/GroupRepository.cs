@@ -13,9 +13,9 @@ namespace Repositories.Repositories
     public class GroupRepository : BaseRepository<Group>, IGroupRepository
     {
         private readonly AppDbContext _appDbContext;
-        public GroupRepository()
+        public GroupRepository(AppDbContext appDbContext):base(appDbContext)
         {
-            _appDbContext = new AppDbContext();
+            _appDbContext = appDbContext;
         }
         public async Task<List<Group>> GetAllWithEducationName()
         {
@@ -28,28 +28,19 @@ namespace Repositories.Repositories
             return result;
         }
         public async Task<List<Group>> GetAllAsync()
-        {
-            
+        {          
             return await _appDbContext.Groups.Include(m=>m.Education).ToListAsync();
         }
 
         public async Task<List<Group>> GetAllByExpressionAsync(Func<Group, bool> predicate)
         {
-            var datas = await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
-            var result = datas.Where(predicate).ToList();
-            return result;
+            return _appDbContext.Groups.Include(m => m.Education).Where(predicate).ToList();
         }
         public async Task<List<Group>> SearchAsync(Func<Group, bool> predicate)
         {
             var datas = await _appDbContext.Groups.Include(m => m.Education).ToListAsync();
             var result = datas.Where(predicate).ToList();
             return result;
-        }
-        public async Task UpdateGroup(Group group)
-        {
-            _appDbContext.Entry(group).State = EntityState.Modified;
-            _appDbContext.ChangeTracker.AcceptAllChanges();
-            await _appDbContext.SaveChangesAsync();
         }
 
     }

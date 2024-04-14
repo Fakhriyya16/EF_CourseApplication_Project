@@ -2,25 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
 using Repositories.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repositories
 {
     public class EducationRepository : BaseRepository<Education>, IEducationRepository
     {
         private readonly AppDbContext _appDbContext;
-        public EducationRepository()
+        public EducationRepository(AppDbContext appDbContext):base(appDbContext)
         {
-            _appDbContext = new AppDbContext();
+            _appDbContext = appDbContext;
         }
-        public async Task<List<Education>> GetAllWithGroups()
+        public async Task<List<Education>> GetAllWithGroups(string msg = null)
         {
-            _appDbContext.ChangeTracker.AcceptAllChanges();
-            return await _appDbContext.Educations.Include(m => m.Groups).ToListAsync();
+            return await _appDbContext.Educations.Include(m=>m.Groups).ToListAsync();
         }
+        public async Task<Education> GetEducationByExpressionAsync(Func<Education, bool> predicate)
+        {
+            return _appDbContext.Educations.Include(m=>m.Groups).FirstOrDefault(predicate);
+        }
+        public async Task<List<Education>> GetAllAsync()
+        {
+            return await _appDbContext.Educations.Include(m=>m.Groups).ToListAsync();
+        }
+
     }
 }

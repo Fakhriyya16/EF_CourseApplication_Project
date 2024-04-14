@@ -12,7 +12,7 @@ namespace Repositories.Repositories.Interfaces
     {
         Task CreateAsync(T entity);
         Task DeleteAsync(T entity);
-        Task<T> UpdateAsync(int? id,T entity);
+        Task UpdateAsync(T entity);
         Task<List<T>> GetAllAsync();
         Task<List<T>> GetAllByExpressionAsync(Func<T, bool> predicate);
         Task<T> GetByExpressionAsync(Func<T, bool> predicate);

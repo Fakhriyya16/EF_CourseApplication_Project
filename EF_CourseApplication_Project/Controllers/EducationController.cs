@@ -201,27 +201,19 @@ namespace EF_CourseApplication_Project.Controllers
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string educationNewName = Console.ReadLine();
                 
-                if (string.IsNullOrWhiteSpace(educationNewName))
-                {
-                    educationFound.Name = _educationService.UpdateAsync(educationId).Result.Name;
-                }
-                else
+                if (!string.IsNullOrWhiteSpace(educationNewName))
                 {
                     educationFound.Name = educationNewName;
                 }
                 
                 ConsoleColor.Cyan.ConsoleMessage("Update color: ");
                 string educationNewColor = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(educationNewColor))
-                {
-                    educationFound.Color = _educationService.UpdateAsync(educationId).Result.Color;
-                }
-                else
+                if (!string.IsNullOrWhiteSpace(educationNewColor))
                 {
                     educationFound.Color = educationNewColor;
                 }
 
-                ConsoleColor.Green.ConsoleMessage(ResponseMessages.SuccessfullOperation);
+                _educationService.UpdateAsync(educationFound);
             }
             catch (Exception ex)
             {

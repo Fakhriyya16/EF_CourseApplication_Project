@@ -10,8 +10,6 @@ namespace Repositories.Repositories.Interfaces
     public interface IGroupRepository : IBaseRepository<Group>
     {
         Task<List<Group>> GetAllWithEducationName();
-        //Task<Group> UpdateGroupAsync(int? id, Group group);
-        public Task UpdateGroup(Group group);
-
+        Task<List<Group>> GetAllAsync();
     }
 }

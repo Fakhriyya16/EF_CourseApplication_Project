@@ -20,13 +20,9 @@ namespace Service.Services
     public class GroupService : IGroupService
     {
         private readonly IGroupRepository _repository;
-        private readonly AppDbContext _appDbContext;
-        private readonly IEducationRepository _educationRepository;
         public GroupService()
         {
-            _repository = new GroupRepository();
-            _appDbContext = new AppDbContext();
-            _educationRepository = new EducationRepository();
+            _repository = new GroupRepository(new AppDbContext());
         }
         public async Task CreateAsync(Group group)
         {
@@ -127,7 +123,7 @@ namespace Service.Services
 
         public async Task UpdateGroup(Group group)
         {
-            await _repository.UpdateGroup(group);
+            await _repository.UpdateAsync(group);
         }
     }
 }

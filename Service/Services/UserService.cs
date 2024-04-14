@@ -18,7 +18,7 @@ namespace Service.Services
         private readonly IUserRepository _repository;
         public UserService()
         {
-            _repository = new UserRepository();
+            _repository = new UserRepository(new Repositories.Data.AppDbContext());
         }
         public async Task<bool> LoginAsync(string usernameOrEmail,string password)
         {

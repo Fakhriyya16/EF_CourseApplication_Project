@@ -8,6 +8,9 @@ EducationController educationController = new EducationController();
 GroupController groupController = new GroupController();
 UserController userController = new UserController();
 
+
+
+
 void IntroMenu()
 {
     ConsoleColor.Magenta.ConsoleMessage("Press\n1. Register\n2. Login");
@@ -41,7 +44,7 @@ OperationType: string operationTypeStr = Console.ReadLine();
         ConsoleColor.Red.ConsoleMessage("Wront format");
         goto OperationType;
     }
-    if(operationType > 2 || operationType <= 0)
+    if (operationType > 2 || operationType <= 0)
     {
         ConsoleColor.Red.ConsoleMessage("Please choose again:");
         goto IntroMenu;
@@ -64,7 +67,9 @@ OperationType: string operationTypeStr = Console.ReadLine();
             }
 
         MainMenu: MainMenu();
+
         MainOperationType: string mainOperationTypeStr = Console.ReadLine();
+
             int mainOperationType;
             isCorrect = int.TryParse(mainOperationTypeStr, out mainOperationType);
             if (!isCorrect)
@@ -127,6 +132,6 @@ OperationType: string operationTypeStr = Console.ReadLine();
                     await groupController.SortByCapacity();
                     goto MainMenu;
             }
-        break;
+            break;
     }
 }

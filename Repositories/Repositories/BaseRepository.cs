@@ -14,9 +14,9 @@ namespace Repositories.Repositories
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         private readonly AppDbContext _appDbContext;
-        public BaseRepository()
+        public BaseRepository(AppDbContext appDbContext)
         {
-            _appDbContext = new AppDbContext();
+            _appDbContext = appDbContext;
         }
         public async Task CreateAsync(T entity)
         {
@@ -56,12 +56,10 @@ namespace Repositories.Repositories
             return result;
         }
 
-        public async Task<T> UpdateAsync(int? id, T entity)
+        public async Task UpdateAsync(T entity)
         {
-            var datas = await _appDbContext.Set<T>().ToListAsync();
-            var result = datas.FirstOrDefault(m=>m.Id == id);
+            _appDbContext.Entry(entity).State = EntityState.Modified;
             await _appDbContext.SaveChangesAsync();
-            return result;
         }
     }
 }

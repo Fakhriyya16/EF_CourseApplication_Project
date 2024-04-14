@@ -14,7 +14,6 @@ namespace Service.Services.Interfaces
         public Task<List<Group>> GetAllAsync();
         public Task<Group> GetByIdAsync(int? id);
         public Task DeleteAsync(int? id);
-        //public Task<Group> UpdateAsync(int? id);
         public Task<List<GroupDTO>> SearchAsync(string searchName); 
         public Task<List<GroupDTO>> FilterByEducationNameAsync(string groupName); 
         public Task<List<GroupDTO>> GetAllWithEducationIdAsync(int? id);

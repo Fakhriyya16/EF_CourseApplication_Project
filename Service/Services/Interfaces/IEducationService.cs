@@ -14,7 +14,7 @@ namespace Service.Services.Interfaces
         public Task<List<Education>> GetAllAsync();
         public Task<Education> GetByIdAsync(int? id);
         public Task DeleteAsync(int? id);
-        public Task<Education> UpdateAsync(int? id);
+        public Task UpdateAsync(Education education);
         public Task<List<EducationDTO>> SearchAsync(string searchText);
         public Task<List<EducationGroupDTO>> GetAllWithGroupsAsync();
         public Task<List<Education>> SortWithCreatedDate(int orderType);

@@ -223,6 +223,7 @@ namespace EF_CourseApplication_Project.Controllers
 
                 ConsoleColor.Cyan.ConsoleMessage("Update name:");
                 string groupNewName = Console.ReadLine();
+                
                 if(!string.IsNullOrWhiteSpace(groupNewName))
                 {
                     groupFound.Name = groupNewName;
@@ -261,6 +262,7 @@ namespace EF_CourseApplication_Project.Controllers
 
                 string groupEducationIdStr = Console.ReadLine();
                 int groupEducationId;
+                
                 if (string.IsNullOrWhiteSpace(groupEducationIdStr))
                 {
                     groupEducationId = 0;
@@ -273,12 +275,16 @@ namespace EF_CourseApplication_Project.Controllers
                         ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                         goto EducationId;
                     }
+                    
                 }
                 if(groupEducationId != 0)
-                {
+                { 
+
                     groupFound.EducationId = groupEducationId;
+
+                    await _groupService.UpdateGroup(groupFound);
                 }
-                await _groupService.UpdateGroup(groupFound);
+                
             }
 
             catch (Exception ex)

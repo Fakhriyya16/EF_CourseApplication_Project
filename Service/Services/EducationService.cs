@@ -20,7 +20,7 @@ namespace Service.Services
         private readonly IEducationRepository _repository;
         public EducationService()
         {
-            _repository = new EducationRepository();
+            _repository = new EducationRepository(new Repositories.Data.AppDbContext());
         }
         public async Task CreateAsync(Education education)
         {
@@ -71,7 +71,7 @@ namespace Service.Services
 
         public async Task<Education> GetByIdAsync(int? id)
         {
-            var result = await _repository.GetByExpressionAsync(m=>m.Id == id);
+            var result = await _repository.GetEducationByExpressionAsync(m=>m.Id == id);
             if (result is null) throw new NotFoundException(ResponseMessages.NotFound);
             return result;
         }
@@ -103,11 +103,9 @@ namespace Service.Services
             return educations;
         }
 
-        public async Task<Education> UpdateAsync(int? id)
+        public async Task UpdateAsync(Education education)
         {
-            Education education = await _repository.UpdateAsync(id, await _repository.GetByExpressionAsync(m => m.Id == id));
-            if (education is null) throw new NotFoundException(ResponseMessages.NotFound + "Update Failed");
-            return education;
+            await _repository.UpdateAsync(education);
         }
     }
 }
