@@ -7,11 +7,7 @@ using Service.Helpers.Enums;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Service.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Service.Services
 {

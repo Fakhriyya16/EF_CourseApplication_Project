@@ -264,7 +264,7 @@ namespace EF_CourseApplication_Project.Controllers
                         ConsoleColor.Red.ConsoleMessage(ResponseMessages.WrongFormat);
                         goto GroupCapacity;
                     }
-                    if (groupCapacity <= 0 || groupCapacity > 50)
+                    if (groupCapacity < 0 || groupCapacity > 50)
                     {
                         ConsoleColor.Red.ConsoleMessage("Invalid capacity amount");
                         goto GroupCapacity;
@@ -307,8 +307,9 @@ namespace EF_CourseApplication_Project.Controllers
 
                     groupFound.EducationId = groupEducationId;
 
-                    await _groupService.UpdateGroup(groupFound);
+                    
                 }
+                await _groupService.UpdateGroup(groupFound);
 
             }
 

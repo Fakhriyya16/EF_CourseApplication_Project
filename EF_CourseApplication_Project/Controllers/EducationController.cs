@@ -18,18 +18,20 @@ namespace EF_CourseApplication_Project.Controllers
         }
         public async Task CreateAsync()
         {
-            ConsoleColor.Cyan.ConsoleMessage("Create name: ");
+            Name: ConsoleColor.Cyan.ConsoleMessage("Create name: ");
             string educationName = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(educationName))
             {
                 ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto Name;
             }
 
-            ConsoleColor.Cyan.ConsoleMessage("Add color: ");
+            Color: ConsoleColor.Cyan.ConsoleMessage("Add color: ");
             string educationColor = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(educationColor))
             {
                 ConsoleColor.Red.ConsoleMessage(ResponseMessages.EmptyInput);
+                goto Color;
             }
 
             Education newEducation = new Education { Name = educationName, Color = educationColor };
